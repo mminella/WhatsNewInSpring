@@ -1,0 +1,609 @@
+<!--
+	Big data idea: http://waxy.org/2008/05/star_wars_kid_the_data_dump/
+-->
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>What's new with Spring!</title>
+
+		<meta name="description" content="A talk about the recent developments in the Spring ecosystem">
+		<meta name="author" content="Michael T Minella">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<script src="lib/js/prefixfree.min.js"></script>
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/spring.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+		<style type="text/css">
+			#integrationChallenges {
+				background: #eee;
+				width: 1240px;
+				margin: 0 0 0 20px;
+				color:black ;
+				box-shadow: 10px 10px 10px 0px rgba(114,114,114,.4);
+			}
+			#integrationChallenges thead:first-child {
+				background: #6DB23F;
+				color: white;
+				font-weight: bold;
+			}
+			#integrationChallenges tbody tr:nth-child(odd) {
+				background: #DDD;
+			}
+			#integrationChallenges tbody tr td span {
+				color: gray;
+			}
+			#integrationChallenges td {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>What's new with Spring!</h1>
+					<p>
+						<small>Created by <a href="http://springframework.io/team/mminella">Michael T Minella</a> / <a href="http://twitter.com/michaelminella">@michaelminella</a></small>
+					</p>
+				</section>
+
+				<section data-state="bio">
+					<h1>Who is this guy?</h1>
+					<img id="proSpringBatch" src="./img/proSpringBatch.jpg" style="transform: rotate(-20deg) scale(.7);float:left;visibility:hidden;"/>
+					<ul>
+						<li class="fragment">Project lead for Spring Batch</li>
+						<li class="fragment" id="author">Author of Pro Spring Batch</li>
+						<li class="fragment">Member of the expert group for JSR-352</li>
+						<li class="fragment">Twitter: <a href="http://www.twitter.com/michaelminella">@michaelminella</a></li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>What is this about?</h1>
+					<ul>
+						<li class="fragment">Spring I/O</li>
+						<li class="fragment">Spring</li>
+						<li class="fragment">Spring Boot</li>
+						<li class="fragment">Spring XD</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Spring I/O</h1>
+				</section>
+
+				<section>
+					<article>
+						<h1>Spring I/O</h1>
+						<img style="margin:0px;" width="70%" src="./img/SpringIOExecution.png"/>
+						<img style="margin:0px;" width="70%" src="./img/SpringIOFoundation.png"/>
+					</article>
+				</section>
+
+				<section>
+					<h1>New Website</h1>
+					<iframe src="http://spring.io" width="70%" height="500px" style="border: 1px solid gray;"></iframe>
+				</section>
+
+				<section>
+					<h1>?</h1>
+				</section>
+
+				<section>
+					<h1>Spring</h1>
+				</section>
+
+				<section>
+					<h1>Spring 4</h1>
+				</section>
+
+				<section>
+					<h1>When was Spring released?</h1>
+					<aside class="notes">
+						March 24, 2004
+					</aside>
+				</section>
+
+				<section>
+					<h1>Spring is almost 10 years old</h1>
+				</section>
+
+				<section><h1>Only reved the major version two other times.</h1></section>
+
+				<section>
+					<h1>What's in Spring 4?</h1>
+					<ul>
+						<li class="fragment">Updates to all major dependencies</li>
+						<li class="fragment">Pruning of depricated features</li>
+						<li class="fragment">Groovy based configuration</li>
+						<li class="fragment">Java 8 support</li>
+						<li class="fragment">WebSocket support</li>
+						<li class="fragment">And much more!</li>
+						<aside class="notes">
+							<ul>
+								<li>lamba support</li>
+								<li>JSR-310 Date &amp; Time support</li>
+							</ul>
+						</aside>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Spring and the JVM</h1>
+					<h2>Java, Scala, Groovy, etc</h2>
+				</section>
+
+				<section>
+					<h1>Spring and Scala</h1>
+					<pre><code data-trim contenteditable class="scala">
+class ServiceConfiguration extends FunctionalConfiguration {
+	importClass(classOf[DataSourceConfiguration])
+
+	val dataSource:DataSource = getBean("dataSource")
+
+	val jdbcTemplate = bean() {
+		new JdbcTemplate(dataSource)
+	}
+
+	val jdbcTransactionmanager = bean("txManager") {
+		new JdbcTransactionManager(dataSource)
+	}
+}					
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Spring and Groovy</h1>
+					<pre><code data-trim contenteditable class="groovy">
+import o.sf.jdbc.core.JdbcTemplate
+import o.sf.jdbc.datasource.DataSourceTransactionManager
+
+beans {
+	jdbcTemplate(JdbcTemplate) {
+		dataSource = dataSource
+	}
+
+	transactionManager(DataSourceTransactionmanager) {
+		dataSource = dataSource
+	}
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Spring and Java</h1>
+					<pre><code data-trim contenteditable class="java">
+@Configuration
+@ComponentScan
+@Import(DataSourceConfiguration.class)
+@EnableTransactionManagement
+class ServiceConfiguration {
+
+	@Bean
+	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
+	}
+
+	@Bean
+	public PlatformTransactionManager jdbcTemplateManager(DataSource dataSource) {
+		return new JdbcTransactionManager(dataSource);
+	}
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Spring and Java 8</h1>
+				</section>
+
+				<section>
+					<h1>Method references</h1>
+					<pre><code data-trim contenteditable class="java">
+private Customer map(ResultSet rs, int rowNum) throws SQLException {
+    return new Customer(rs.getString("name"), rs.getInt("age"));
+}
+
+private void build(PreparedStatement ps) throws SQLException {
+    ps.setString(1, "Mike%");
+}
+
+...
+jdbcTemplate.query("SELECT name, age FROM customer WHERE name like ?", 
+    this::build,
+    this::map);
+);
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Lambdas</h1>
+					<pre><code data-trim contenteditable class="java">
+JdbcTemplate jt = new JdbcTemplate(dataSource);
+
+jt.query("SELECT name, age FROM person WHERE name like ?", 
+    ps -> { ps.setString(1, "Mike%"); },
+    (rs, rowNum) -> new Person(rs.getString(1), rs.getInt(2));
+);
+					</code></pre>
+					<aside class="notes">
+						Note that types have been dropped in parameters
+					</aside>
+				</section>
+
+				<section>
+					<h1><span style="text-transform:lowercase;">java.time</h1>
+					<pre><code data-trim contenteditable class="java">
+public class Customer {
+	
+	@DateTimeFormat(iso=ISO.DATE)
+	private LocalDate birthDate;
+
+	@DateTimeFormat(pattern="M/d/yy h:mm")
+	private LocalDateTime lastUpdate;
+}					
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>WebSockets</h1>
+					<ul>
+						<li class="fragment">Delegates to app server implemnetations (Tomcat, Jetty, etc)</li>
+						<li class="fragment">Supports Sock.js, a superset of WS</li>
+						<li class="fragment">STOMP support over WS</li>
+						<li class="fragment">Message API moved from Spring Integration to Spring Core</li>
+						<li class="fragment">JSR-356 (javax.websocket.*) support</li>
+					</ul>
+					<aside class="notes">
+						STOMP = Streaming Text Oriented Messaging Protocol
+					</aside>
+				</section>
+
+				<section>
+					<h1>WebSocket subscription</h1>
+					<pre><code data-trim contenteditable class="java">
+@Controller
+public class PortfolioController {
+    ...
+	@MessageMapping("/app/trade")
+	public void executeTrade(Trade trade, Principal principal) {
+	    trade.setUsername(principal.getName());
+	    this.tradeService.executeTrade(trade);
+	}
+
+	@SubscribeEvent("/app/positions")
+	public List&lt;PortfolioPosition&gt; subscribeToPortfolios(Principal principal) {
+	    String user = principal.getName();
+	    Portfolio portfolio = this.portfolioService.findPortfolio(user);
+	    return portfolio.getPositions();
+	}
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Spring in JEE</h1>
+					<ul>
+						<li class="fragment">Full support for EE 7
+							<ul>
+								<li class="fragment">Date/Time</li>
+								<li class="fragment">JTA 1.2</li>
+								<li class="fragment">JMS 2.0</li>
+								<li class="fragment">JPA 2.1</li>
+								<li class="fragment">Bean validation 1.1</li>
+								<li class="fragment">Concurrency (JSR-236)</li>
+								<li class="fragment">Servlet 3.1</li>
+								<li class="fragment">WebSockets (JSR-356)</li>
+							</ul>
+						</li>
+						<li class="fragment">Participated in JSR-356 and JSR-352</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>?</h1>
+				</section>
+
+				<section>
+					<h1>Spring Boot</h1>
+				</section>
+
+				<section>
+					<h1>Spring Opinionated</h1>
+				</section>
+
+				<section>
+					<h1>Goals of Spring Boot</h1>
+					<ul>
+						<li class="fragment">Radically faster getting started experience</li>
+						<li class="fragment">Be opinionated out of the box...</li>
+						<li class="fragment">...but get out of the way as requirements diverge</li>
+						<li class="fragment">Zero code generation or XML</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Demo</h1>
+				</section>
+
+				<section>
+					<h1>Spring Boot</h1>
+					<ul>
+						<li class="fragment">Maximizes productivity</li>
+						<li class="fragment">Minimizes boilerplate code</li>
+						<li class="fragment">Makes Spring fun!</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Who uses this in production?</h1>
+				</section>
+
+				<section>
+					<h1>We do!</h1>
+					<iframe src="http://spring.io" width="70%" height="500px" style="border: 1px solid gray;"></iframe>
+				</section>
+
+				<section>
+					<h1>Spring.io</h1>
+					<ul>
+						<li class="fragment">Nearly a million unique visitors a month</li>
+						<li class="fragment">Aprox 5 million page views a month</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>?</h1>
+				</section>
+
+				<section>
+					<h1>Spring XD</h1>
+				</section>
+
+				<section>
+					<h1>Big Data Challenges...</h1>
+					<ul>
+						<li class="fragment">Building Big Data applications is too complex</li>
+						<li class="fragment">Low level coding experience that require lots of boilerplate code</li>
+						<li class="fragment">Numerous domains to bridge</li>
+						<li class="fragment">Inconsistent APIs</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>...Are Integration Challenges</h1>
+					<table id="integrationChallenges">
+						<thead>
+							<tr>
+								<td>Big Data Terminology</td>
+								<td>Integration Terminology</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Data flow model<br/><span>Source, Channel, Sink</span></td>
+								<td>EIP Patterns<br/><span>Adapter, Channel, Filter, Transformer, etc.</span></td>
+							</tr>
+							<tr>
+								<td>Workflow Orchestration<br/><span>Workflow, Action</span></td>
+								<td>Batch Processing<br/><span>Job, Step</span></td>
+							</tr>
+							<tr>
+								<td>Export<br/><span>Jobs, Connectors</span></td>
+								<td>Batch Processing<br/><span>Jobs, Readers/Writers</span></td>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+
+				<section data-transition="none">
+					<img src="./img/BigDataEcosystem.png"/>
+				</section>
+
+				<section data-transition="none">
+					<img src="./img/BigDataEcosystemSpringXD.png"/>
+				</section>
+
+				<section data-transition="none">
+					<img src="./img/BigDataEcosystemSpringXD2.png"/>
+				</section>
+
+				<section>
+					<h1>Architecture</h1>
+					<ul>
+						<li class="fragment">Distributed Portable Runtime</li>
+						<li class="fragment">Pluggable Module System</li>
+						<li class="fragment">Domains Specific Language</li>
+					</ul>
+				</section>
+
+				<section>
+					<img src="./img/runtime.png"/>
+				</section>
+
+				<section data-transition="none">
+					<h1>Domain Specific Language</h1>
+					<p style="font-family: monospace">http | hdfs</p>
+				</section>
+
+				<section data-transition="none">
+					<h1>Domain Specific Language</h1>
+					<p style="font-family: monospace">http --port 8181 | hdfs --directory /xd/1</p>
+				</section>
+
+				<section data-transition="none">
+					<h1>Domain Specific Language</h1>
+					<p style="font-family: monospace">http --port 8181 | filter --expression='payload?.price > 3.0' | hdfs --directory /xd/1</p>
+				</section>
+
+				<section data-transition="none">
+					<h1>Real-time Analytics via Taps</h1>
+					<p class="fragment" style="font-family: monospace">twittersearch --query=#spring | file</p>
+					<p class="fragment" style="font-family: monospace">tap:tweets > field-value-counter --fieldName=entities.hashTags.text --counterName=tags</p>
+				</section>
+
+				<section>
+					<h1>Spring XD</h1>
+					<div>
+						<img src="./img/spring_xd_logo.png" style="float:left"/>
+						<ul style="float:left; margin:0 0 0 70px;">
+							<li class="fragment">Unified platform across big data domains</li>
+							<li class="fragment">Productivity</li>
+							<li class="fragment">Proven foundation</li>
+							<li class="fragment">Extensible</li>
+							<li class="fragment">Distributed</li>
+							<li class="fragment">Portable runtime</li>
+							<li class="fragment">Hadoop agnostic</li>
+						</ul>
+					</div>
+				</section>
+
+				<section>
+					<h1>Demo</h1>
+				</section>
+
+				<section>
+					<h1>?</h1>
+				</section>
+				
+				<section>
+					<h1>Keep in touch!</h1>
+					<ul>
+						<li>Michael Minella
+							<ul>
+								<li>Twitter: <a href="https://twitter.com/michaelminella">@MichaelMinella</a></li>
+								<li>Github: <a href="https://github.com/mminella">mminella</a></li>
+							</ul>
+						</li>
+						<li>Spring Batch
+							<ul>
+								<li>Site: <a href="http://spring.io/projects/spring-batch">Spring Batch</a></li>
+								<li>Session replays on YouTube: <a href="http://spring.io/video">YouTube</a></li>
+							</ul>
+						</li>
+						<li>Spring
+							<ul>
+								<li>Site: <a href="http://spring.io/">Spring IO</a></li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+
+			</div>
+			<img src="./img/spring_logo.png" style="width:10%;margin:10px;position:fixed;right:0px;bottom:0px;"/>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+		<script src="lib/js/Chart.js"></script>
+
+		<script>
+			Reveal.addEventListener( 'fragmentshown', function( event ) {
+			    var element = event.fragment;
+
+			    if(element.id == "author") {
+			    	document.getElementById("proSpringBatch").style.visibility = 'visible';
+			    }
+			} );
+
+			Reveal.addEventListener( 'fragmenthidden', function( event ) {
+			    var element = event.fragment;
+
+			    if(element.id == "author") {
+			    	document.getElementById("proSpringBatch").style.visibility = 'hidden';
+			    }
+			} );
+
+			Reveal.addEventListener( 'spring-involvement', function() {
+				var ctx = document.getElementById("spring-involvement-chart").getContext("2d");
+				var options = {
+					animationEasing : "easeInOutCubic"
+				}
+				var data = [
+					{
+						value: 2,
+						color:"#5ED065",
+						label: 'Spring'
+					},
+					{
+						value : 2,
+						color : "#55B9BD",
+						label: 'IBM'
+					},
+					{
+						value : 1,
+						color : "#E6A267",
+						label: 'Independent'
+					},
+					{
+						value : 1,
+						color : "#E66B67",
+						label: 'Oracle'
+					},
+					{
+						value : 1,
+						color : "#5ED065",
+						label: 'Red Hat'
+					},
+					{
+						value : 1,
+						color : "#55B9BD",
+						label: 'Credit Suisse'
+					}			
+				];
+
+				new Chart(ctx).Pie(data, options);
+			}, false );
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+				width: 1280,
+				height: 720,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
